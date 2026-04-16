@@ -34,7 +34,7 @@ function ExperienceCard({ item, speed }: { item: WorkExperience; speed: number }
 				<div className="flex flex-wrap items-start justify-between gap-3">
 					<div>
 						<h3 className="text-xl font-semibold text-slate-900">{item.role}</h3>
-						<p className="text-sm font-medium text-slate-700">{item.company}</p>
+						<p className="text-sm font-medium text-[#00f5d4]">{item.company}</p>
 					</div>
 					<div className="text-right text-xs uppercase tracking-[0.18em] text-slate-600">
 						<p>{item.timeline}</p>
@@ -208,6 +208,8 @@ export default function Page() {
 					))}
 				</div>
 			</section>
+
+			{/* Make the skills look more presentable, maybe add the icons on the technologies, and add a bit of animation on the cards when they come into view. Also, for the projects section, it would be great to have a thumbnail image for each project to make it more visually appealing. */}
 
 			<section id="skills" className="space-y-6">
 				<SectionHeader eyebrow="Skills" title="Technology Stack" />

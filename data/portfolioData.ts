@@ -23,9 +23,9 @@ export type Project = {
 
 export const profileOverview = {
 	name: "Jason Abella",
-	title: "Web Developer",
+	title: "Frontend Web Developer",
 	intro:
-		"I build responsive, accessible web experiences that blend product thinking with clean engineering. I enjoy turning complex ideas into interfaces that feel intuitive, quick, and purposeful.",
+		"Frontend Developer with 5+ years of experience building scalable, high-performance web applications using React, Next.js, and Astro. Specialized in responsive UI development, performance optimization, and SEO-focused architecture. Proven ability to translate design concepts into production-ready interfaces while improving Core Web Vitals, usability, and user engagement. Experienced working in Agile teams delivering modern web solutions for e-commerce and local SEO platforms. ",
 	location: "Philippines",
 	email: "abellajason20@gmail.com",
 	github: "https://github.com/abellajason",
@@ -34,50 +34,54 @@ export const profileOverview = {
 
 export const workExperience: WorkExperience[] = [
 	{
-		role: "Frontend Developer",
-		company: "Freelance & Contract Projects",
-		timeline: "2023 - Present",
+		role: "Frontend Web Developer",
+		company: "Locafy",
+		timeline: "April 2023 - Present",
 		location: "Remote",
 		highlights: [
-			"Built and shipped responsive web pages for portfolio, small business, and landing-page use cases using modern React and Next.js patterns.",
-			"Collaborated with stakeholders to translate goals into practical UI requirements, user flows, and content structure.",
-			"Improved page speed and usability by optimizing image delivery, reducing unnecessary rerenders, and refining semantic markup.",
+			"Developed and maintained responsive websites optimized for desktop and mobile devices",
+			"Built SEO-focused websites and dynamic location pages for local search platforms",
+			"Improved page performance and loading speed through optimization techniques such as code splitting, asset compression, and lazy loading ",
 		],
 	},
 	{
-		role: "Junior Web Developer",
-		company: "Independent Team Projects",
-		timeline: "2021 - 2023",
+		role: "Frontend Web Developer",
+		company: "Full Potential Solutions Inc",
+		timeline: "October 2021 - December 2022",
+		location: "Remote",
+		highlights: [
+			"Delivered responsive web interfaces aligned with modern UX standards",
+			"Worked closely with cross-functional teams to ship features on time in an Agile environment",
+			"Performed code reviews to maintain consistency, readability, and quality across the codebase",
+		],
+	},
+	{
+		role: "Frontend Web Developer",
+		company: "Appshouse, Inc",
+		timeline: "May 2018 - March 2021",
 		location: "Hybrid",
 		highlights: [
-			"Contributed to reusable component libraries for internal projects, improving consistency and reducing duplicate code.",
-			"Implemented REST API integrations and form flows with robust loading and error states.",
-			"Worked closely with designers to preserve visual intent while maintaining maintainable, scalable code.",
+			"Designed and developed user interfaces based on brand guidelines and design specifications",
+			"Implemented responsive layouts ensuring compatibility across devices and browsers",
+			"Contributed to a company-wide design system, improving UI consistency and development efficiency",
 		],
 	},
 ];
 
 export const educationHistory: Education[] = [
 	{
-		institution: "STI College",
+		institution: "Asian College of Technology International Educational Foundation",
 		credential: "Bachelor of Science in Information Technology",
-		timeline: "2018 - 2022",
+		timeline: "June 2012 - March 2016",
 		details:
 			"Focused on web systems, software development fundamentals, and team-based software delivery.",
-	},
-	{
-		institution: "Online Continuing Education",
-		credential: "Frontend Engineering Coursework",
-		timeline: "2022 - Present",
-		details:
-			"Ongoing learning in modern React patterns, performance, accessibility, and UI architecture.",
-	},
+	}
 ];
 
 export const skillGroups = [
 	{
 		label: "Frontend",
-		skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"],
+		skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS", "Astro"],
 	},
 	{
 		label: "Backend & Data",
