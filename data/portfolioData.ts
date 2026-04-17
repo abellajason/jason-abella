@@ -19,6 +19,8 @@ export type Project = {
 	stack: string[];
 	liveLink: string;
 	codeLink: string;
+	thumbnailGradient: string;
+	thumbnailAccent: string;
 };
 
 export const profileOverview = {
@@ -26,7 +28,7 @@ export const profileOverview = {
 	title: "Frontend Web Developer",
 	intro:
 		"Frontend Developer with 5+ years of experience building scalable, high-performance web applications using React, Next.js, and Astro. Specialized in responsive UI development, performance optimization, and SEO-focused architecture. Proven ability to translate design concepts into production-ready interfaces while improving Core Web Vitals, usability, and user engagement. Experienced working in Agile teams delivering modern web solutions for e-commerce and local SEO platforms. ",
-	location: "Philippines",
+	location: "Cebu, Philippines",
 	email: "abellajason20@gmail.com",
 	github: "https://github.com/abellajason",
 	linkedin: "https://www.linkedin.com/in/jason-abella-b4837215a/",
@@ -81,15 +83,37 @@ export const educationHistory: Education[] = [
 export const skillGroups = [
 	{
 		label: "Frontend",
-		skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS", "Astro"],
+		skills: [
+			{ name: "HTML5", icon: "SiHtml5" },
+			{ name: "CSS3", icon: "SiCss" },
+			{ name: "JavaScript", icon: "SiJavascript" },
+			{ name: "TypeScript", icon: "SiTypescript" },
+			{ name: "React", icon: "SiReact" },
+			{ name: "Next.js", icon: "SiNextdotjs" },
+			{ name: "Tailwind CSS", icon: "SiTailwindcss" },
+			{ name: "Astro", icon: "SiAstro" },
+		],
 	},
 	{
 		label: "Backend & Data",
-		skills: ["Node.js", "Express", "REST APIs", "PostgreSQL", "Firebase"],
+		skills: [
+			{ name: "Node.js", icon: "SiNodedotjs" },
+			{ name: "Express", icon: "SiExpress" },
+			{ name: "REST APIs", icon: null },
+			{ name: "PostgreSQL", icon: "SiPostgresql" },
+			{ name: "Firebase", icon: "SiFirebase" },
+		],
 	},
 	{
 		label: "Tools & Practices",
-		skills: ["Git", "GitHub", "Figma", "Responsive Design", "Accessibility", "Performance Tuning"],
+		skills: [
+			{ name: "Git", icon: "SiGit" },
+			{ name: "GitHub", icon: "SiGithub" },
+			{ name: "Figma", icon: "SiFigma" },
+			{ name: "Responsive Design", icon: null },
+			{ name: "Accessibility", icon: null },
+			{ name: "Performance Tuning", icon: null },
+		],
 	},
 ];
 
@@ -101,6 +125,8 @@ export const projects: Project[] = [
 		stack: ["Next.js", "TypeScript", "Tailwind CSS"],
 		liveLink: "https://github.com/abellajason/jason-abella",
 		codeLink: "https://github.com/abellajason/jason-abella",
+		thumbnailGradient: "linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #091520 100%)",
+		thumbnailAccent: "#00f5d4",
 	},
 	{
 		title: "Frontend Project Collection",
@@ -109,6 +135,8 @@ export const projects: Project[] = [
 		stack: ["React", "JavaScript", "CSS"],
 		liveLink: "https://github.com/abellajason?tab=repositories",
 		codeLink: "https://github.com/abellajason?tab=repositories",
+		thumbnailGradient: "linear-gradient(135deg, #150a28 0%, #1e0d3a 40%, #100820 100%)",
+		thumbnailAccent: "#8b5cf6",
 	},
 	{
 		title: "Developer Sandbox",
@@ -117,6 +145,8 @@ export const projects: Project[] = [
 		stack: ["Node.js", "REST APIs", "GitHub"],
 		liveLink: "https://github.com/abellajason",
 		codeLink: "https://github.com/abellajason",
+		thumbnailGradient: "linear-gradient(135deg, #1a0818 0%, #280a20 40%, #150614 100%)",
+		thumbnailAccent: "#f72585",
 	},
 ];
 

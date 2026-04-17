@@ -1,7 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+	SiAstro,
+	SiCss,
+	SiExpress,
+	SiFigma,
+	SiFirebase,
+	SiGit,
+	SiGithub,
+	SiHtml5,
+	SiJavascript,
+	SiNextdotjs,
+	SiNodedotjs,
+	SiPostgresql,
+	SiReact,
+	SiTailwindcss,
+	SiTypescript,
+} from "react-icons/si";
 import { Parallax } from "react-scroll-parallax";
 import {
 	type Education,
@@ -15,6 +32,41 @@ import {
 	socialLinks,
 	workExperience,
 } from "../data/portfolioData";
+import { useInView, useScrollReveal } from "./hooks/useInView";
+
+const ICON_MAP: Record<string, React.ElementType> = {
+	SiHtml5,
+	SiCss,
+	SiJavascript,
+	SiTypescript,
+	SiReact,
+	SiNextdotjs,
+	SiTailwindcss,
+	SiAstro,
+	SiNodedotjs,
+	SiExpress,
+	SiPostgresql,
+	SiFirebase,
+	SiGit,
+	SiGithub,
+	SiFigma,
+};
+
+function AnimatedCard({ children, direction = "left" }: { children: React.ReactNode; direction?: "left" | "right" | "up" }) {
+	const { ref, opacity, translateX, translateY } = useScrollReveal(direction);
+	return (
+		<div
+			ref={ref as React.RefObject<HTMLDivElement>}
+			style={{
+				opacity,
+				transform: `translateX(${translateX}px) translateY(${translateY}px)`,
+				transition: "opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+			}}
+		>
+			{children}
+		</div>
+	);
+}
 
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
 	return (
@@ -27,73 +79,90 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
 	);
 }
 
-function ExperienceCard({ item, speed }: { item: WorkExperience; speed: number }) {
+function ExperienceCard({ item, speed, direction = "left" }: { item: WorkExperience; speed: number; direction?: "left" | "right" }) {
 	return (
-		<Parallax speed={speed} className="parallax-layer stagger-item">
-			<article className="portfolio-card">
-				<div className="flex flex-wrap items-start justify-between gap-3">
-					<div>
-						<h3 className="text-xl font-semibold text-slate-900">{item.role}</h3>
-						<p className="text-sm font-medium text-[#00f5d4]">{item.company}</p>
+		<AnimatedCard direction={direction}>
+			<Parallax speed={speed} className="parallax-layer stagger-item">
+				<article className="portfolio-card">
+					<div className="flex flex-wrap items-start justify-between gap-3">
+						<div>
+							<h3 className="text-xl font-semibold text-slate-900">{item.role}</h3>
+							<p className="text-sm font-medium text-[#00f5d4]">{item.company}</p>
+						</div>
+						<div className="text-right text-xs uppercase tracking-[0.18em] text-slate-600">
+							<p>{item.timeline}</p>
+							<p>{item.location}</p>
+						</div>
 					</div>
-					<div className="text-right text-xs uppercase tracking-[0.18em] text-slate-600">
-						<p>{item.timeline}</p>
-						<p>{item.location}</p>
-					</div>
-				</div>
-				<ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-700">
-					{item.highlights.map((highlight) => (
-						<li key={highlight} className="list-disc ml-5">
-							{highlight}
-						</li>
-					))}
-				</ul>
-			</article>
-		</Parallax>
+					<ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-700">
+						{item.highlights.map((highlight) => (
+							<li key={highlight} className="list-disc ml-5">
+								{highlight}
+							</li>
+						))}
+					</ul>
+				</article>
+			</Parallax>
+		</AnimatedCard>
 	);
 }
 
 function EducationCard({ item, speed }: { item: Education; speed: number }) {
 	return (
-		<Parallax speed={speed} className="parallax-layer stagger-item">
-			<article className="portfolio-card">
-				<div className="flex flex-wrap items-start justify-between gap-3">
-					<div>
-						<h3 className="text-lg font-semibold text-slate-900">{item.credential}</h3>
-						<p className="text-sm font-medium text-slate-700">{item.institution}</p>
+		<AnimatedCard direction="up">
+			<Parallax speed={speed} className="parallax-layer stagger-item">
+				<article className="portfolio-card">
+					<div className="flex flex-wrap items-start justify-between gap-3">
+						<div>
+							<h3 className="text-lg font-semibold text-slate-900">{item.credential}</h3>
+							<p className="text-sm font-medium text-slate-700">{item.institution}</p>
+						</div>
+						<p className="text-xs uppercase tracking-[0.18em] text-slate-600">{item.timeline}</p>
 					</div>
-					<p className="text-xs uppercase tracking-[0.18em] text-slate-600">{item.timeline}</p>
-				</div>
-				<p className="mt-4 text-sm leading-relaxed text-slate-700">{item.details}</p>
-			</article>
-		</Parallax>
+					<p className="mt-4 text-sm leading-relaxed text-slate-700">{item.details}</p>
+				</article>
+			</Parallax>
+		</AnimatedCard>
 	);
 }
 
-function ProjectCard({ item, speed }: { item: Project; speed: number }) {
+function ProjectCard({ item, speed, direction = "left" }: { item: Project; speed: number; direction?: "left" | "right" | "up" }) {
 	return (
 		<Parallax speed={speed} className="parallax-layer stagger-item">
-			<article className="portfolio-card">
-				<div className="space-y-3">
-					<h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
-					<p className="text-sm leading-relaxed text-slate-700">{item.description}</p>
-				</div>
-				<div className="mt-4 flex flex-wrap gap-2">
-					{item.stack.map((tech) => (
-						<span key={tech} className="skill-pill">
-							{tech}
-						</span>
-					))}
-				</div>
-				<div className="mt-5 flex flex-wrap gap-2 text-sm">
-					<a className="inline-link" href={item.liveLink} target="_blank" rel="noreferrer">
-						Live Link
-					</a>
-					<a className="inline-link" href={item.codeLink} target="_blank" rel="noreferrer">
-						Source Code
-					</a>
-				</div>
-			</article>
+			<AnimatedCard direction={direction}>
+				<article className="portfolio-card project-card">
+					<div
+						className="project-thumbnail"
+						style={{
+							background: item.thumbnailGradient,
+							"--thumb-accent": item.thumbnailAccent,
+						} as React.CSSProperties}
+					>
+						<div className="project-thumbnail-grid" />
+						<div className="project-thumbnail-glow" style={{ background: `radial-gradient(circle at 50% 60%, ${item.thumbnailAccent}44, transparent 68%)` }} />
+						<span className="project-thumbnail-label">{item.title}</span>
+					</div>
+					<div className="p-4 space-y-3">
+						<h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+						<p className="text-sm leading-relaxed text-slate-700">{item.description}</p>
+					</div>
+					<div className="px-4 pb-2 flex flex-wrap gap-2">
+						{item.stack.map((tech) => (
+							<span key={tech} className="skill-pill">
+								{tech}
+							</span>
+						))}
+					</div>
+					<div className="px-4 pb-4 mt-2 flex flex-wrap gap-2 text-sm">
+						<a className="inline-link" href={item.liveLink} target="_blank" rel="noreferrer">
+							Live Link
+						</a>
+						<a className="inline-link" href={item.codeLink} target="_blank" rel="noreferrer">
+							Source Code
+						</a>
+					</div>
+				</article>
+			</AnimatedCard>
 		</Parallax>
 	);
 }
@@ -191,6 +260,7 @@ export default function Page() {
 							key={`${item.company}-${item.role}`}
 							item={item}
 							speed={index % 2 === 0 ? 5 : -5}
+							direction={index % 2 === 0 ? "left" : "right"}
 						/>
 					))}
 				</div>
@@ -209,8 +279,6 @@ export default function Page() {
 				</div>
 			</section>
 
-			{/* Make the skills look more presentable, maybe add the icons on the technologies, and add a bit of animation on the cards when they come into view. Also, for the projects section, it would be great to have a thumbnail image for each project to make it more visually appealing. */}
-
 			<section id="skills" className="space-y-6">
 				<SectionHeader eyebrow="Skills" title="Technology Stack" />
 				<div className="grid gap-4 md:grid-cols-3 stagger-list">
@@ -220,16 +288,22 @@ export default function Page() {
 							speed={index % 2 === 0 ? 6 : -6}
 							className="parallax-layer stagger-item"
 						>
-							<article className="portfolio-card">
-								<h3 className="text-lg font-semibold text-slate-900">{group.label}</h3>
-								<div className="mt-4 flex flex-wrap gap-2">
-									{group.skills.map((skill) => (
-										<span key={skill} className="skill-pill">
-											{skill}
-										</span>
-									))}
-								</div>
-							</article>
+							<AnimatedCard direction="up">
+								<article className="portfolio-card skill-card">
+									<h3 className="text-lg font-semibold text-slate-900 skill-card-title">{group.label}</h3>
+									<div className="mt-4 flex flex-wrap gap-2">
+										{group.skills.map((skill) => {
+											const IconComponent = skill.icon ? ICON_MAP[skill.icon] : null;
+											return (
+												<span key={skill.name} className="skill-pill skill-pill--icon">
+													{IconComponent && <IconComponent className="skill-icon" aria-hidden="true" />}
+													{skill.name}
+												</span>
+											);
+										})}
+									</div>
+								</article>
+							</AnimatedCard>
 						</Parallax>
 					))}
 				</div>
@@ -239,7 +313,7 @@ export default function Page() {
 				<SectionHeader eyebrow="Projects" title="Selected Work" />
 				<div className="grid gap-4 md:grid-cols-3 stagger-list">
 					{projects.map((item, index) => (
-						<ProjectCard key={item.title} item={item} speed={index % 2 === 0 ? 7 : -7} />
+						<ProjectCard key={item.title} item={item} speed={index % 2 === 0 ? 7 : -7} direction="up" />
 					))}
 				</div>
 			</section>
