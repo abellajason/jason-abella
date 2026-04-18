@@ -183,10 +183,10 @@ function ProjectModal({ item, onClose }: { item: Project; onClose: () => void })
 			onClick={onClose}
 		>
 			<div
-				className="relative w-full max-w-6xl bg-white rounded-2xl overflow-hidden shadow-2xl"
+				className="relative w-full max-w-6xl bg-[#080e1ab8] rounded-2xl overflow-hidden shadow-2xl"
 				onClick={(e) => e.stopPropagation()}
 			>
-				<div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+				<div className="flex items-center justify-between px-5 py-4 border-b border-[#00f5d4]">
 					<div>
 						<h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
 						<p className="text-xs text-slate-500 mt-0.5">{activeIndex + 1} / {item.screenshots.length}</p>
@@ -200,7 +200,7 @@ function ProjectModal({ item, onClose }: { item: Project; onClose: () => void })
 						&times;
 					</button>
 				</div>
-				<div className="relative w-full aspect-video bg-slate-100">
+				<div className="relative w-full aspect-video bg-[#080e1ab8]">
 					<Image
 						key={item.screenshots[activeIndex]}
 						src={item.screenshots[activeIndex]}
@@ -230,13 +230,13 @@ function ProjectModal({ item, onClose }: { item: Project; onClose: () => void })
 						</>
 					)}
 				</div>
-				<div className="flex gap-2 overflow-x-auto p-3 bg-slate-50">
+				<div className="flex gap-2 overflow-x-auto p-3 bg-[#080e1ab8]">
 					{item.screenshots.map((src, i) => (
 						<button
 							type="button"
 							key={src}
 							onClick={() => setActiveIndex(i)}
-							className={`relative flex-shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 transition-colors ${
+							className={`relative flex-shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 transition-colors cursor-pointer ${
 								i === activeIndex ? "border-[#00f5d4]" : "border-transparent"
 							}`}
 						>
