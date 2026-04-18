@@ -315,7 +315,7 @@ export default function Page() {
 	return (
 		<>
 		{selectedProject && <ProjectModal item={selectedProject} onClose={() => setSelectedProject(null)} />}
-		<main className="portfolio-shell px-6 md:px-6">
+		<main className="portfolio-shell px-8!">
 			<MaybeParallax speed={-10} className="parallax-layer reveal-up">
 				<nav className="top-nav" aria-label="Portfolio sections">
 					<ul className="top-nav-list">
