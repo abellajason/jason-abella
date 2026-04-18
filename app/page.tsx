@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
 	SiAstro,
 	SiCss,
@@ -32,7 +32,39 @@ import {
 	socialLinks,
 	workExperience,
 } from "../data/portfolioData";
-import { useInView, useScrollReveal } from "./hooks/useInView";
+import { useScrollReveal } from "./hooks/useInView";
+
+function useIsMobile() {
+	const query = "(max-width: 767px)";
+
+	const subscribe = (onStoreChange: () => void) => {
+		if (typeof window === "undefined") return () => {};
+		const mq = window.matchMedia(query);
+
+		if (typeof mq.addEventListener === "function") {
+			mq.addEventListener("change", onStoreChange);
+			return () => mq.removeEventListener("change", onStoreChange);
+		}
+
+		mq.addListener(onStoreChange);
+		return () => mq.removeListener(onStoreChange);
+	};
+
+	const getSnapshot = () => {
+		if (typeof window === "undefined") return false;
+		return window.matchMedia(query).matches;
+	};
+
+	return useSyncExternalStore(subscribe, getSnapshot, () => false);
+}
+
+function MaybeParallax({ speed, className, children, style }: { speed: number; className?: string; children: React.ReactNode; style?: React.CSSProperties }) {
+	const isMobile = useIsMobile();
+	if (isMobile) {
+		return <div className={className} style={style}>{children}</div>;
+	}
+	return <Parallax speed={speed} className={className} style={style}>{children}</Parallax>;
+}
 
 const ICON_MAP: Record<string, React.ElementType> = {
 	SiHtml5,
@@ -54,13 +86,16 @@ const ICON_MAP: Record<string, React.ElementType> = {
 
 function AnimatedCard({ children, direction = "left" }: { children: React.ReactNode; direction?: "left" | "right" | "up" }) {
 	const { ref, opacity, translateX, translateY } = useScrollReveal(direction);
+	const isMobile = useIsMobile();
 	return (
 		<div
 			ref={ref as React.RefObject<HTMLDivElement>}
-			style={{
+			style={isMobile ? { position: "relative", height: "100%" } : {
 				opacity,
 				transform: `translateX(${translateX}px) translateY(${translateY}px)`,
 				transition: "opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+				position: "relative",
+				height: "100%",
 			}}
 		>
 			{children}
@@ -70,20 +105,20 @@ function AnimatedCard({ children, direction = "left" }: { children: React.ReactN
 
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
 	return (
-		<Parallax speed={-4} className="parallax-layer">
+		<MaybeParallax speed={-4} className="parallax-layer">
 			<header className="space-y-2">
 				<p className="section-eyebrow">{eyebrow}</p>
 				<h2 className="section-title">{title}</h2>
 			</header>
-		</Parallax>
+		</MaybeParallax>
 	);
 }
 
 function ExperienceCard({ item, speed, direction = "left" }: { item: WorkExperience; speed: number; direction?: "left" | "right" }) {
 	return (
 		<AnimatedCard direction={direction}>
-			<Parallax speed={speed} className="parallax-layer stagger-item">
-				<article className="portfolio-card">
+			<MaybeParallax speed={speed} className="parallax-layer stagger-item">
+				<article className="portfolio-card h-full">
 					<div className="flex flex-wrap items-start justify-between gap-3">
 						<div>
 							<h3 className="text-xl font-semibold text-slate-900">{item.role}</h3>
@@ -102,7 +137,7 @@ function ExperienceCard({ item, speed, direction = "left" }: { item: WorkExperie
 						))}
 					</ul>
 				</article>
-			</Parallax>
+			</MaybeParallax>
 		</AnimatedCard>
 	);
 }
@@ -110,7 +145,7 @@ function ExperienceCard({ item, speed, direction = "left" }: { item: WorkExperie
 function EducationCard({ item, speed }: { item: Education; speed: number }) {
 	return (
 		<AnimatedCard direction="up">
-			<Parallax speed={speed} className="parallax-layer stagger-item">
+			<MaybeParallax speed={speed} className="parallax-layer stagger-item">
 				<article className="portfolio-card">
 					<div className="flex flex-wrap items-start justify-between gap-3">
 						<div>
@@ -121,54 +156,144 @@ function EducationCard({ item, speed }: { item: Education; speed: number }) {
 					</div>
 					<p className="mt-4 text-sm leading-relaxed text-slate-700">{item.details}</p>
 				</article>
-			</Parallax>
+			</MaybeParallax>
 		</AnimatedCard>
 	);
 }
 
-function ProjectCard({ item, speed, direction = "left" }: { item: Project; speed: number; direction?: "left" | "right" | "up" }) {
+function ProjectModal({ item, onClose }: { item: Project; onClose: () => void }) {
+	const [activeIndex, setActiveIndex] = useState(0);
+
+	const prev = () => setActiveIndex((i) => (i - 1 + item.screenshots.length) % item.screenshots.length);
+	const next = () => setActiveIndex((i) => (i + 1) % item.screenshots.length);
+
+	useEffect(() => {
+		const handleKey = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose();
+			if (e.key === "ArrowLeft") prev();
+			if (e.key === "ArrowRight") next();
+		};
+		document.addEventListener("keydown", handleKey);
+		return () => document.removeEventListener("keydown", handleKey);
+	},);
+
 	return (
-		<Parallax speed={speed} className="parallax-layer stagger-item">
-			<AnimatedCard direction={direction}>
-				<article className="portfolio-card project-card">
-					<div
-						className="project-thumbnail"
-						style={{
-							background: item.thumbnailGradient,
-							"--thumb-accent": item.thumbnailAccent,
-						} as React.CSSProperties}
+		<div
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+			onClick={onClose}
+		>
+			<div
+				className="relative w-full max-w-6xl bg-white rounded-2xl overflow-hidden shadow-2xl"
+				onClick={(e) => e.stopPropagation()}
+			>
+				<div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+					<div>
+						<h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
+						<p className="text-xs text-slate-500 mt-0.5">{activeIndex + 1} / {item.screenshots.length}</p>
+					</div>
+					<button
+						type="button"
+						aria-label="Close"
+						onClick={onClose}
+						className="text-slate-400 hover:text-slate-700 transition-colors text-2xl leading-none"
 					>
-						<div className="project-thumbnail-grid" />
-						<div className="project-thumbnail-glow" style={{ background: `radial-gradient(circle at 50% 60%, ${item.thumbnailAccent}44, transparent 68%)` }} />
-						<span className="project-thumbnail-label">{item.title}</span>
+						&times;
+					</button>
+				</div>
+				<div className="relative w-full aspect-video bg-slate-100">
+					<Image
+						key={item.screenshots[activeIndex]}
+						src={item.screenshots[activeIndex]}
+						alt={`${item.title} screenshot ${activeIndex + 1}`}
+						fill
+						sizes="(max-width: 768px) 100vw, 90vw"
+						className="object-contain"
+					/>
+					{item.screenshots.length > 1 && (
+						<>
+							<button
+								type="button"
+								aria-label="Previous screenshot"
+								onClick={prev}
+								className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors"
+							>
+								&#8249;
+							</button>
+							<button
+								type="button"
+								aria-label="Next screenshot"
+								onClick={next}
+								className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors"
+							>
+								&#8250;
+							</button>
+						</>
+					)}
+				</div>
+				<div className="flex gap-2 overflow-x-auto p-3 bg-slate-50">
+					{item.screenshots.map((src, i) => (
+						<button
+							type="button"
+							key={src}
+							onClick={() => setActiveIndex(i)}
+							className={`relative flex-shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 transition-colors ${
+								i === activeIndex ? "border-[#00f5d4]" : "border-transparent"
+							}`}
+						>
+							<Image src={src} alt={`Thumbnail ${i + 1}`} fill sizes="80px" className="object-cover" />
+						</button>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function ProjectCard({ item, speed, direction = "left", onOpen }: { item: Project; speed: number; direction?: "left" | "right" | "up"; onOpen: () => void }) {
+	return (
+		<MaybeParallax speed={speed} className="parallax-layer stagger-item">
+			<AnimatedCard direction={direction}>
+				<article
+					className="portfolio-card project-card cursor-pointer group"
+					onClick={onOpen}
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => e.key === "Enter" && onOpen()}
+				>
+					<div className="relative w-full aspect-video overflow-hidden bg-slate-100">
+						<Image
+							src={item.screenshots[0]}
+							alt={`${item.title} preview`}
+							fill
+							sizes="(max-width: 768px) 100vw, 33vw"
+							className="object-cover transition-transform duration-300 group-hover:scale-105"
+						/>
+						<div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+							<span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-sm font-medium bg-black/60 px-3 py-1.5 rounded-full">
+								View screenshots
+							</span>
+						</div>
 					</div>
 					<div className="p-4 space-y-3">
 						<h3 className="text-lg font-semibold text-slate-900">{item.title}</h3>
 						<p className="text-sm leading-relaxed text-slate-700">{item.description}</p>
 					</div>
-					<div className="px-4 pb-2 flex flex-wrap gap-2">
+					<div className="px-4 pb-4 flex flex-wrap gap-2">
 						{item.stack.map((tech) => (
 							<span key={tech} className="skill-pill">
 								{tech}
 							</span>
 						))}
 					</div>
-					<div className="px-4 pb-4 mt-2 flex flex-wrap gap-2 text-sm">
-						<a className="inline-link" href={item.liveLink} target="_blank" rel="noreferrer">
-							Live Link
-						</a>
-						<a className="inline-link" href={item.codeLink} target="_blank" rel="noreferrer">
-							Source Code
-						</a>
-					</div>
 				</article>
 			</AnimatedCard>
-		</Parallax>
+		</MaybeParallax>
 	);
 }
 
 export default function Page() {
 	const [showBackToTop, setShowBackToTop] = useState(false);
+	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -188,8 +313,10 @@ export default function Page() {
 	};
 
 	return (
-		<main className="portfolio-shell px-6 md:px-0">
-			<Parallax speed={-10} className="parallax-layer reveal-up">
+		<>
+		{selectedProject && <ProjectModal item={selectedProject} onClose={() => setSelectedProject(null)} />}
+		<main className="portfolio-shell px-6 md:px-6">
+			<MaybeParallax speed={-10} className="parallax-layer reveal-up">
 				<nav className="top-nav" aria-label="Portfolio sections">
 					<ul className="top-nav-list">
 						{navLinks.map((link) => (
@@ -201,10 +328,10 @@ export default function Page() {
 						))}
 					</ul>
 				</nav>
-			</Parallax>
+			</MaybeParallax>
 
 			<section id="overview" className="hero-grid">
-				<Parallax speed={-8} className="parallax-layer reveal-up">
+				<MaybeParallax speed={-8} className="parallax-layer reveal-up">
 					<div className="space-y-6">
 						<p className="section-eyebrow">Profile Overview</p>
 						<h1 className="hero-title">{profileOverview.name}</h1>
@@ -236,12 +363,12 @@ export default function Page() {
 							))}
 						</div>
 					</div>
-				</Parallax>
+				</MaybeParallax>
 
-				<Parallax speed={9} className="parallax-layer reveal-up" style={{ animationDelay: "120ms" }}>
+				<MaybeParallax speed={9} className="parallax-layer reveal-up" style={{ animationDelay: "120ms" }}>
 					<aside className="portrait-wrap">
 						<Image
-							src="/profile.jfif"
+							src="/profile2.png"
 							alt="Portrait of Jason Abella"
 							width={500}
 							height={500}
@@ -249,7 +376,7 @@ export default function Page() {
 							className="portrait-image"
 						/>
 					</aside>
-				</Parallax>
+				</MaybeParallax>
 			</section>
 
 			<section id="experience" className="space-y-6">
@@ -283,7 +410,7 @@ export default function Page() {
 				<SectionHeader eyebrow="Skills" title="Technology Stack" />
 				<div className="grid gap-4 md:grid-cols-3 stagger-list">
 					{skillGroups.map((group, index) => (
-						<Parallax
+						<MaybeParallax
 							key={group.label}
 							speed={index % 2 === 0 ? 6 : -6}
 							className="parallax-layer stagger-item"
@@ -304,7 +431,7 @@ export default function Page() {
 									</div>
 								</article>
 							</AnimatedCard>
-						</Parallax>
+						</MaybeParallax>
 					))}
 				</div>
 			</section>
@@ -313,14 +440,14 @@ export default function Page() {
 				<SectionHeader eyebrow="Projects" title="Selected Work" />
 				<div className="grid gap-4 md:grid-cols-3 stagger-list">
 					{projects.map((item, index) => (
-						<ProjectCard key={item.title} item={item} speed={index % 2 === 0 ? 7 : -7} direction="up" />
+						<ProjectCard key={item.title} item={item} speed={index % 2 === 0 ? 7 : -7} direction="up" onOpen={() => setSelectedProject(item)} />
 					))}
 				</div>
 			</section>
 
 			<section id="contact" className="space-y-6">
 				<SectionHeader eyebrow="Contact" title="Let's Build Something" />
-				<Parallax speed={-6} className="parallax-layer reveal-up">
+				<MaybeParallax speed={-6} className="parallax-layer reveal-up">
 					<article className="portfolio-card">
 						<p className="max-w-2xl text-sm leading-relaxed text-slate-700">
 							I am open to freelance projects, collaborations, and full-time opportunities in web
@@ -340,7 +467,7 @@ export default function Page() {
 							</a>
 						</div>
 					</article>
-				</Parallax>
+				</MaybeParallax>
 			</section>
 
 			<button
@@ -354,5 +481,6 @@ export default function Page() {
 				</svg>
 			</button>
 		</main>
+		</>
 	);
 }

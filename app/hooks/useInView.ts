@@ -35,6 +35,7 @@ export function useInView(threshold = 0.15) {
 
 export function useScrollReveal(direction: "left" | "right" | "up" = "left") {
 	const ref = useRef<HTMLElement | null>(null);
+
 	const [state, setState] = useState<ScrollRevealState>({
 		opacity: 0,
 		translateX: direction === "left" ? -40 : direction === "right" ? 40 : 0,
@@ -42,6 +43,10 @@ export function useScrollReveal(direction: "left" | "right" | "up" = "left") {
 	});
 
 	useEffect(() => {
+		if (typeof window !== "undefined" && window.innerWidth < 768) {
+			return;
+		}
+
 		const el = ref.current;
 		if (!el) return;
 

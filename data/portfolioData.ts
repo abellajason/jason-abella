@@ -17,10 +17,7 @@ export type Project = {
 	title: string;
 	description: string;
 	stack: string[];
-	liveLink: string;
-	codeLink: string;
-	thumbnailGradient: string;
-	thumbnailAccent: string;
+	screenshots: string[];
 };
 
 export const profileOverview = {
@@ -119,34 +116,46 @@ export const skillGroups = [
 
 export const projects: Project[] = [
 	{
-		title: "Personal Portfolio Website",
+		title: "Astro Components",
 		description:
-			"A polished and responsive portfolio built with Next.js App Router, reusable UI sections, and content blocks designed for easy updates.",
-		stack: ["Next.js", "TypeScript", "Tailwind CSS"],
-		liveLink: "https://github.com/abellajason/jason-abella",
-		codeLink: "https://github.com/abellajason/jason-abella",
-		thumbnailGradient: "linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #091520 100%)",
-		thumbnailAccent: "#00f5d4",
+			"A modular UI component library built with Astro, featuring reusable islands, content collections, and static-first rendering patterns optimized for performance and developer experience.",
+		stack: ["Astro", "TypeScript", "Tailwind CSS"],
+		screenshots: [
+			"/projects/astro-components/sc1.png",
+			"/projects/astro-components/sc2.png",
+			"/projects/astro-components/sc3.png",
+			"/projects/astro-components/sc4.png",
+			"/projects/astro-components/sc5.png",
+			"/projects/astro-components/sc6.png",
+			"/projects/astro-components/sc7.png",
+			"/projects/astro-components/sc8.png",
+		],
 	},
 	{
-		title: "Frontend Project Collection",
+		title: "Locafy",
 		description:
-			"A set of web interfaces focused on modern layout systems, form handling, and responsive behavior across device sizes.",
-		stack: ["React", "JavaScript", "CSS"],
-		liveLink: "https://github.com/abellajason?tab=repositories",
-		codeLink: "https://github.com/abellajason?tab=repositories",
-		thumbnailGradient: "linear-gradient(135deg, #150a28 0%, #1e0d3a 40%, #100820 100%)",
-		thumbnailAccent: "#8b5cf6",
+			"A local SEO platform that generates high-performance, location-specific landing pages at scale. Built with dynamic content injection, structured schema markup, and Core Web Vitals optimization to drive local search visibility.",
+		stack: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+		screenshots: [
+			"/projects/locafy/sc1.png",
+			"/projects/locafy/sc2.png",
+			"/projects/locafy/sc3.png",
+			"/projects/locafy/sc4.png",
+			"/projects/locafy/sc5.png",
+			"/projects/locafy/sc6.png",
+		],
 	},
 	{
-		title: "Developer Sandbox",
+		title: "Werkingmate Admin",
 		description:
-			"An experimental workspace for testing UI patterns, reusable components, and optimization techniques before production rollout.",
-		stack: ["Node.js", "REST APIs", "GitHub"],
-		liveLink: "https://github.com/abellajason",
-		codeLink: "https://github.com/abellajason",
-		thumbnailGradient: "linear-gradient(135deg, #1a0818 0%, #280a20 40%, #150614 100%)",
-		thumbnailAccent: "#f72585",
+			"An internal admin dashboard for managing workspaces, team members, and operational workflows. Features role-based access control, data tables, and a clean accessible interface built for day-to-day operational efficiency.",
+		stack: ["Next.js","React", "TypeScript", "REST APIs", "Tailwind CSS"],
+		screenshots: [
+			"/projects/werkingmate-admin/sc1.png",
+			"/projects/werkingmate-admin/sc2.png",
+			"/projects/werkingmate-admin/sc3.png",
+			"/projects/werkingmate-admin/sc4.png",
+		],
 	},
 ];
 
