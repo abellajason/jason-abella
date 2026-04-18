@@ -215,7 +215,7 @@ function ProjectModal({ item, onClose }: { item: Project; onClose: () => void })
 								type="button"
 								aria-label="Previous screenshot"
 								onClick={prev}
-								className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors"
+								className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors cursor-pointer"
 							>
 								&#8249;
 							</button>
@@ -223,7 +223,7 @@ function ProjectModal({ item, onClose }: { item: Project; onClose: () => void })
 								type="button"
 								aria-label="Next screenshot"
 								onClick={next}
-								className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors"
+								className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-9 h-9 flex items-center justify-center transition-colors cursor-pointer"
 							>
 								&#8250;
 							</button>
